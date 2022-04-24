@@ -1,0 +1,40 @@
+﻿namespace PhotoKeeper.Api.Persistence.Application.AutoMappers;
+
+using AutoMapper;
+using PhotoKeeper.Api.Entities;
+using PhotoKeeper.Api.Models.AccountDtos.Requests;
+using PhotoKeeper.Api.Models.AccountDtos.Responses;
+
+public class AccountAutoMapper : Profile
+{
+	// mappings between model and entity objects
+	public AccountAutoMapper()
+	{
+		CreateMap<Account, AccountResponse>();
+
+		CreateMap<Account, AuthenticateResponse>();
+
+		CreateMap<RegisterRequest, Account>();
+
+		CreateMap<CreateRequest, Account>();
+
+		CreateMap<UpdateRequest, Account>()
+			.ForAllMembers(x => x.Condition(
+				(src, dest, prop) =>
+				{
+					// ignore null & empty string properties
+					if (prop == null)
+						return false;
+
+					if (prop.GetType() == typeof(string) && string.IsNullOrEmpty((string)prop))
+						return false;
+
+					// ignore null role
+					if (x.DestinationMember.Name == "Role" && src.Role == null)
+						return false;
+
+					return true;
+				}
+			));
+	}
+}

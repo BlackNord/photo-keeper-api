@@ -1,0 +1,14 @@
+version: '3.7'
+
+services:
+  mailslurper:
+    image: marcopas/docker-mailslurper
+    restart: always
+    container_name: PhotoKeeperSMTPMailslurper
+    ports:
+      - 2500:2500
+      - 8080:8080
+      - 8085:8085
+    volumes:
+    # overrides default configs
+      - ./custom-config.json:/opt/mailslurper/config.json
