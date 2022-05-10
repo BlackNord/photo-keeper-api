@@ -26,7 +26,8 @@ To configure correct IP-adress of the container the commands below:
 	Docker ps
 	Docker inspect CONTAINER_ID
 
-Test credential - "admin@pgadmin.com": "password"
+Test credentials for pgAdmin - "admin@pgadmin.com": "password"
+Test credentials for test database - "PhotoKeeper": "postgres"
 
 PgAdmin by default can be checked on http://localhost:5050
 

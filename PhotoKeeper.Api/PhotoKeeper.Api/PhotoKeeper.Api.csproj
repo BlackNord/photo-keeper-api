@@ -29,8 +29,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Migrations\" />
-    <Folder Include="Models\AccountDtos\" />
     <Folder Include="Authorization\" />
     <Folder Include="Tools\" />
   </ItemGroup>

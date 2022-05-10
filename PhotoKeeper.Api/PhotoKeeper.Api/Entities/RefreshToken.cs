@@ -24,6 +24,6 @@ public class RefreshToken
 	public DateTime ExpirationTime { get; set; }
 
 	public bool IsExpired => DateTime.UtcNow >= ExpirationTime;
-	public bool IsCancelled => !CancellationTime.HasValue;
-	public bool IsActive => CancellationTime.HasValue && !IsExpired;
+	public bool IsCancelled => CancellationTime.HasValue;
+	public bool IsActive => !CancellationTime.HasValue && !IsExpired;
 }

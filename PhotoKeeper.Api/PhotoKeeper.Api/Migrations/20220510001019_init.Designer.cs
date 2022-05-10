@@ -12,7 +12,7 @@ using PhotoKeeper.Api.Persistence.Database;
 namespace PhotoKeeper.Api.Migrations
 {
     [DbContext(typeof(ApplicationDatabaseContext))]
-    [Migration("20220424162818_init")]
+    [Migration("20220510001019_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
