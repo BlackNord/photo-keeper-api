@@ -2,7 +2,7 @@
 
 using System.ComponentModel.DataAnnotations;
 
-public class ForgotPasswordRequest
+public class MailNotificationRequest
 {
 	[Required]
 	[EmailAddress]

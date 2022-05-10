@@ -21,6 +21,7 @@ public class CreateRequest
 
 	[Required]
 	[MinLength(5)]
+	[MaxLength(15)]
 	public string Password { get; set; }
 
 	[Required]

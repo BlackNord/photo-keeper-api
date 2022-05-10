@@ -20,6 +20,8 @@ public class AccountService : IAccountService
 {
 	private readonly ApplicationDatabaseContext _context;
 
+	private readonly ClientSettings _clientSettings;
+
 	private readonly IMapper _mapper;
 
 	private readonly AppSettings _appSettings;
@@ -32,6 +34,7 @@ public class AccountService : IAccountService
 		IJwtUtils jwtUtils,
 		IMapper mapper,
 		IOptions<AppSettings> appSettings,
+		IOptions<ClientSettings> clientSettings,
 		IEmailService emailService)
 	{
 		_context = context;
@@ -39,6 +42,7 @@ public class AccountService : IAccountService
 		_mapper = mapper;
 		_appSettings = appSettings.Value;
 		_emailService = emailService;
+		_clientSettings = clientSettings.Value;
 	}
 
 	public AuthenticateResponse Authenticate(AuthenticateRequest model, string ipAddress)
@@ -108,6 +112,9 @@ public class AccountService : IAccountService
 
 	public void RevokeToken(string token, string ipAddress)
 	{
+		if (token.IsNullOrEmpty() || ipAddress.IsNullOrEmpty())
+			return;
+
 		var account = getAccountByRefreshToken(token);
 		var refreshToken = account.RefreshTokens.Single(x => x.Token == token);
 
@@ -120,13 +127,13 @@ public class AccountService : IAccountService
 		_context.SaveChanges();
 	}
 
-	public void Register(RegisterRequest model, string origin)
+	public void Register(RegisterRequest model)
 	{
 		// validate
 		if (_context.Accounts.Any(x => x.Email == model.Email))
 		{
 			// preventing account enumeration
-			sendAlreadyRegisteredEmail(model.Email, origin);
+			sendAlreadyRegisteredEmail(model.Email);
 			return;
 		}
 
@@ -147,7 +154,7 @@ public class AccountService : IAccountService
 		_context.SaveChanges();
 
 		// send email
-		sendVerificationEmail(account, origin);
+		sendVerificationEmail(account);
 	}
 
 	public void VerifyEmail(string token)
@@ -164,7 +171,25 @@ public class AccountService : IAccountService
 		_context.SaveChanges();
 	}
 
-	public void ForgotPassword(ForgotPasswordRequest model, string origin)
+	public void RepeatVerifying(MailNotificationRequest model)
+	{
+		var account = _context.Accounts.SingleOrDefault(x => x.Email == model.Email);
+
+		// always return ok response to prevent email enumeration
+		if (account == null)
+			return;
+
+		// create reset token that expires after 1 day
+		account.VerificationToken = generateVerificationToken();
+
+		_context.Accounts.Update(account);
+		_context.SaveChanges();
+
+		// send email
+		sendVerificationEmail(account);
+	}
+
+	public void ForgotPassword(MailNotificationRequest model)
 	{
 		var account = _context.Accounts.SingleOrDefault(x => x.Email == model.Email);
 
@@ -180,7 +205,7 @@ public class AccountService : IAccountService
 		_context.SaveChanges();
 
 		// send email
-		sendPasswordResetEmail(account, origin);
+		sendPasswordResetEmail(account);
 	}
 
 	public void ValidateResetToken(ValidateResetedTokenRequest model)
@@ -372,69 +397,69 @@ public class AccountService : IAccountService
 		token.ReplacedByToken = replacedByToken;
 	}
 
-	private void sendVerificationEmail(Account account, string origin)
+	private void sendVerificationEmail(Account account)
 	{
 		string message;
-		if (!string.IsNullOrEmpty(origin))
+		if (!string.IsNullOrEmpty(_clientSettings.ClientAddress))
 		{
 			// origin exists if request sent from browser single page app (e.g. Angular or React)
 			// so send link to verify via single page app
-			var verifyUrl = $"{origin}/account/verify-email?token={account.VerificationToken}";
-			message = $@"<p>Please click the below link to verify your email address:</p>
+			var verifyUrl = $"{_clientSettings.ClientAddress}/account/verify-email?token={account.VerificationToken}";
+			message = $@"<p>Please click the link below to verify your email address:</p>
                             <p><a href=""{verifyUrl}"">{verifyUrl}</a></p>";
 		}
 		else
 		{
 			// origin missing if request sent directly to api (e.g. from Postman)
 			// so send instructions to verify directly with api
-			message = $@"<p>Please use the below token to verify your email address with the <code>/accounts/verify-email</code> api route:</p>
+			message = $@"<p>Please use the token below  to verify your email address with the <code>/accounts/verify-email</code> api route:</p>
                             <p><code>{account.VerificationToken}</code></p>";
 		}
 
 		_emailService.Send(
 			to: account.Email,
-			subject: "Sign-up Verification API - Verify Email",
+			subject: "PhotoKeeper",
 			html: $@"<h4>Verify Email</h4>
                         <p>Thanks for registering!</p>
                         {message}"
 		);
 	}
 
-	private void sendAlreadyRegisteredEmail(string email, string origin)
+	private void sendAlreadyRegisteredEmail(string email)
 	{
 		string message;
-		if (!string.IsNullOrEmpty(origin))
-			message = $@"<p>If you don't know your password please visit the <a href=""{origin}/account/forgot-password"">forgot password</a> page.</p>";
+		if (!string.IsNullOrEmpty(_clientSettings.ClientAddress))
+			message = $@"<p>If you don't know your password please visit the <a href=""{_clientSettings.ClientAddress}/account/forgot-password"">forgot password</a> page.</p>";
 		else
 			message = "<p>If you don't know your password you can reset it via the <code>/accounts/forgot-password</code> api route.</p>";
 
 		_emailService.Send(
 			to: email,
-			subject: "Sign-up Verification API - Email Already Registered",
+			subject: "PhotoKeeper",
 			html: $@"<h4>Email Already Registered</h4>
                         <p>Your email <strong>{email}</strong> is already registered.</p>
                         {message}"
 		);
 	}
 
-	private void sendPasswordResetEmail(Account account, string origin)
+	private void sendPasswordResetEmail(Account account)
 	{
 		string message;
-		if (!string.IsNullOrEmpty(origin))
+		if (!string.IsNullOrEmpty(_clientSettings.ClientAddress))
 		{
-			var resetUrl = $"{origin}/account/reset-password?token={account.ResetToken}";
-			message = $@"<p>Please click the below link to reset your password, the link will be valid for 1 day:</p>
+			var resetUrl = $"{_clientSettings.ClientAddress}/account/reset-password?token={account.ResetToken}";
+			message = $@"<p>Please click the link below to reset your password, the link will be valid for 1 day:</p>
                             <p><a href=""{resetUrl}"">{resetUrl}</a></p>";
 		}
 		else
 		{
-			message = $@"<p>Please use the below token to reset your password with the <code>/accounts/reset-password</code> api route:</p>
+			message = $@"<p>Please use the token below to reset your password with the <code>/accounts/reset-password</code> api route:</p>
                             <p><code>{account.ResetToken}</code></p>";
 		}
 
 		_emailService.Send(
 			to: account.Email,
-			subject: "Sign-up Verification API - Reset Password",
+			subject: "PhotoKeeper",
 			html: $@"<h4>Reset Password Email</h4>
                         {message}"
 		);

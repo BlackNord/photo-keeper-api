@@ -8,10 +8,11 @@ public interface IAccountService
 	AuthenticateResponse Authenticate(AuthenticateRequest model, string ipAddress);
 	AuthenticateResponse RefreshToken(string token, string ipAddress);
 
-	void Register(RegisterRequest model, string origin);
+	void Register(RegisterRequest model);
 	void VerifyEmail(string token);
+	void RepeatVerifying(MailNotificationRequest model);
 
-	void ForgotPassword(ForgotPasswordRequest model, string origin);
+	void ForgotPassword(MailNotificationRequest model);
 	void ResetPassword(ResetPasswordRequest model);
 
 	void ValidateResetToken(ValidateResetedTokenRequest model);

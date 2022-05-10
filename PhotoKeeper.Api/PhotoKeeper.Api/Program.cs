@@ -35,6 +35,7 @@ var builder = WebApplication.CreateBuilder(args);
 	// configure strongly typed settings object
 	services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 	services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
+	services.Configure<ClientSettings>(builder.Configuration.GetSection("ClientSettings"));
 
 	// configure DI for application services and tools
 	services.AddScoped<IJwtUtils, JwtUtils>();

@@ -62,7 +62,7 @@ public class AccountController : BaseController
 	[HttpPost("register")]
 	public IActionResult Register(RegisterRequest model)
 	{
-		_accountService.Register(model, Request.Headers["origin"]);
+		_accountService.Register(model);
 		return Ok(new { message = "Registration is successful, please check your email for verification instructions." });
 	}
 
@@ -76,10 +76,18 @@ public class AccountController : BaseController
 
 	[AllowAnonymous]
 	[HttpPost("forgot-password")]
-	public IActionResult ForgotPassword(ForgotPasswordRequest model)
+	public IActionResult ForgotPassword(MailNotificationRequest model)
 	{
-		_accountService.ForgotPassword(model, Request.Headers["origin"]);
+		_accountService.ForgotPassword(model);
 		return Ok(new { message = "Please check your email for password reset instructions." });
+	}
+
+	[AllowAnonymous]
+	[HttpPost("repeat-verifying")]
+	public IActionResult RepeatVerifying(MailNotificationRequest model)
+	{
+		_accountService.RepeatVerifying(model);
+		return Ok(new { message = "Please check your email for verification instructions." });
 	}
 
 	[AllowAnonymous]

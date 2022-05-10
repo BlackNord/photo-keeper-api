@@ -14,7 +14,7 @@ public class UpdateRequest
 	public string Surname { get; set; }
 
 	[EnumDataType(typeof(Role))]
-	public string Role
+	public string? Role
 	{
 		get => _role;
 		set => _role = replaceEmptyWithNull(value);
@@ -28,14 +28,15 @@ public class UpdateRequest
 	}
 
 	[MinLength(5)]
-	public string Password
+	[MaxLength(15)]
+	public string? Password
 	{
 		get => _password;
 		set => _password = replaceEmptyWithNull(value);
 	}
 
 	[Compare("Password")]
-	public string ConfirmedPassword
+	public string? ConfirmedPassword
 	{
 		get => _confirmedPassword;
 		set => _confirmedPassword = replaceEmptyWithNull(value);
