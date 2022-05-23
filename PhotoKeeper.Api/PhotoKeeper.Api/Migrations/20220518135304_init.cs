@@ -36,6 +36,22 @@ namespace PhotoKeeper.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "photos",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    photo_name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    description = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    image_name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    user_id = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_photos", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "refresh_token",
                 columns: table => new
                 {
@@ -70,6 +86,9 @@ namespace PhotoKeeper.Api.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "photos");
+
             migrationBuilder.DropTable(
                 name: "refresh_token");
 

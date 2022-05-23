@@ -4,20 +4,20 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PhotoKeeper.Api.Entities;
 
-public class AccountConfiguration : IEntityTypeConfiguration<Account>
+public class PhotoConfiguration : IEntityTypeConfiguration<Photo>
 {
-	public void Configure(EntityTypeBuilder<Account> builder)
+	public void Configure(EntityTypeBuilder<Photo> builder)
 	{
 		builder
-			.Property(x => x.Name)
-			.HasMaxLength(25);
+			.Property(x => x.PhotoName)
+			.HasMaxLength(50);
 
 		builder
-			.Property(x => x.Surname)
-			.HasMaxLength(25);
+			.Property(x => x.Description)
+			.HasMaxLength(50);
 
 		builder
-			.Property(x => x.Email)
+			.Property(x => x.ImageName)
 			.HasMaxLength(50);
 	}
 }
