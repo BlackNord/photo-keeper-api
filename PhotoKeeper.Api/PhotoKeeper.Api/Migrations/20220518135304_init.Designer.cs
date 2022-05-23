@@ -12,7 +12,7 @@ using PhotoKeeper.Api.Persistence.Database;
 namespace PhotoKeeper.Api.Migrations
 {
     [DbContext(typeof(ApplicationDatabaseContext))]
-    [Migration("20220510001019_init")]
+    [Migration("20220518135304_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -96,6 +96,41 @@ namespace PhotoKeeper.Api.Migrations
                         .HasName("pk_accounts");
 
                     b.ToTable("accounts", (string)null);
+                });
+
+            modelBuilder.Entity("PhotoKeeper.Api.Entities.Photo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("description");
+
+                    b.Property<string>("ImageName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("image_name");
+
+                    b.Property<string>("PhotoName")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("photo_name");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_photos");
+
+                    b.ToTable("photos", (string)null);
                 });
 
             modelBuilder.Entity("PhotoKeeper.Api.Entities.Account", b =>
