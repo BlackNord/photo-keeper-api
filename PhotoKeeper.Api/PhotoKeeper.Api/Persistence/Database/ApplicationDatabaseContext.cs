@@ -8,6 +8,7 @@ using System.Reflection;
 public class ApplicationDatabaseContext : DbContext
 {
 	public DbSet<Account>? Accounts { get; set; }
+	public DbSet<Photo>? Photos { get; set; }
 
 	private readonly DatabaseSettings settings;
 
