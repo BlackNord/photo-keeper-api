@@ -1,7 +1,10 @@
 ﻿namespace PhotoKeeper.Api.Entities;
 
+using System.ComponentModel.DataAnnotations;
+
 public class Account
 {
+	[Key]
 	public int Id { get; set; }
 
 	public string Name { get; set; }
