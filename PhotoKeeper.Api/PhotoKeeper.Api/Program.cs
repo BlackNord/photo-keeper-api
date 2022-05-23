@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using PhotoKeeper.Api.Authorization;
 using PhotoKeeper.Api.Interfaces.Authorization;
 using PhotoKeeper.Api.Interfaces.Services;
@@ -41,6 +42,7 @@ var builder = WebApplication.CreateBuilder(args);
 	services.AddScoped<IJwtUtils, JwtUtils>();
 	services.AddScoped<IAccountService, AccountService>();
 	services.AddScoped<IEmailService, EmailService>();
+	services.AddScoped<IPhotoService, PhotoService>();
 }
 
 var app = builder.Build();
@@ -68,13 +70,21 @@ using (var scope = app.Services.CreateScope())
 		.SetIsOriginAllowed(origin => true)
 		.AllowAnyMethod()
 		.AllowAnyHeader()
-		.AllowCredentials());
+		.AllowCredentials()
+		.WithOrigins("http://localhost:8000"));
 
 	// global error handler
 	app.UseMiddleware<ErrorHandler>();
 
 	// custom jwt auth middleware
 	app.UseMiddleware<JwtMiddleware>();
+
+	var env = builder.Environment;
+	app.UseStaticFiles(new StaticFileOptions
+	{
+		FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, "Images")),
+		RequestPath = "/Images"
+	});
 
 	app.UseHttpsRedirection();
 	app.UseHttpLogging();
