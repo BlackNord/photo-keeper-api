@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PhotoKeeper.Api.Entities;
 
-public class AppointmentConfiguration : IEntityTypeConfiguration<Account>
+public class AccountConfiguration : IEntityTypeConfiguration<Account>
 {
 	public void Configure(EntityTypeBuilder<Account> builder)
 	{

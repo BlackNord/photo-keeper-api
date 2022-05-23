@@ -85,9 +85,6 @@ public class AccountService : IAccountService
 			_context.SaveChanges();
 		}
 
-		if (!refreshToken.IsActive)
-			throw new AppException("Invalid token.");
-
 		// replace old refresh token with a new one (rotate token)
 		var newRefreshToken = rotateRefreshToken(refreshToken, ipAddress);
 		account.RefreshTokens.Add(newRefreshToken);
