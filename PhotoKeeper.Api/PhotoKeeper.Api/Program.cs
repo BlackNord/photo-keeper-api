@@ -43,6 +43,7 @@ var builder = WebApplication.CreateBuilder(args);
 	services.AddScoped<IAccountService, AccountService>();
 	services.AddScoped<IEmailService, EmailService>();
 	services.AddScoped<IPhotoService, PhotoService>();
+	services.AddScoped<IColorizationService, ColorizationService>();
 }
 
 var app = builder.Build();

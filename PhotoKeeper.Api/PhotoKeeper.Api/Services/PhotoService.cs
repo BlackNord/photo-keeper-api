@@ -112,11 +112,13 @@ public class PhotoService : IPhotoService
 	{
 		string imageName = new String(Path.GetFileNameWithoutExtension(imageFile.FileName).Take(10).ToArray()).Replace(' ', '-');
 		imageName = imageName + DateTime.Now.ToString("yymmssfff") + Path.GetExtension(imageFile.FileName);
+
 		var imagePath = Path.Combine(_hostEnvironment.ContentRootPath, "Images", imageName);
 		using (var fileStream = new FileStream(imagePath, FileMode.Create))
 		{
 			imageFile.CopyTo(fileStream);
 		}
+
 		return imageName;
 	}
 
