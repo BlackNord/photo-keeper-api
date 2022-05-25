@@ -348,3 +348,6 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+PhotoKeeper.Api/PhotoKeeper.Api/Colorization/.idea
+PhotoKeeper.Api/PhotoKeeper.Api/ColorizationModels/colorization_release_v2.caffemodel
