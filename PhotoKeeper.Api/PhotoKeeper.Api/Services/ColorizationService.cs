@@ -46,7 +46,7 @@ public class ColorizationService : IColorizationService
 
 	public void CopyToNNInputFromStorage(string imageName)
 	{
-		var imagePath = Path.Combine(_hostEnvironment.ContentRootPath, "Images", imageName);
+		var imagePath = Path.Combine(_hostEnvironment.ContentRootPath, "wwwroot", "Images", imageName);
 
 		if (File.Exists(imagePath))
 			File.Copy(imagePath, Path.Combine(_hostEnvironment.ContentRootPath, "Colorization/Input", imageName));
@@ -57,7 +57,7 @@ public class ColorizationService : IColorizationService
 		var imagePath = Path.Combine(_hostEnvironment.ContentRootPath, "Colorization/Output", imageOldName);
 
 		if (File.Exists(imagePath))
-			File.Copy(imagePath, Path.Combine(_hostEnvironment.ContentRootPath, "Images", imageName));
+			File.Copy(imagePath, Path.Combine(_hostEnvironment.ContentRootPath, "wwwroot", "Images", imageName));
 	}
 
 	public void DeleteFromNNFolders(string imageOldName)

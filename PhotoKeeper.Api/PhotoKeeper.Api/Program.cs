@@ -83,8 +83,8 @@ using (var scope = app.Services.CreateScope())
 	var env = builder.Environment;
 	app.UseStaticFiles(new StaticFileOptions
 	{
-		FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, "Images")),
-		RequestPath = "/Images"
+		FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, "wwwroot", "Images")),
+		RequestPath = "/wwwroot/Images"
 	});
 
 	app.UseHttpsRedirection();
