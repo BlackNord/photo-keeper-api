@@ -37,7 +37,7 @@ public class PhotoService : IPhotoService
 				PhotoName = x.PhotoName,
 				Description = x.Description,
 				ImageName = x.ImageName,
-				ImageSrc = String.Format("{0}://{1}/Images/{3}", scheme, host, pathBase, x.ImageName),
+				ImageSrc = String.Format("{0}://{1}/wwwroot/Images/{3}", scheme, host, pathBase, x.ImageName),
 				UserId = x.UserId
 			})
 			.Where(x => x.UserId == accountId)
@@ -113,7 +113,7 @@ public class PhotoService : IPhotoService
 		string imageName = new String(Path.GetFileNameWithoutExtension(imageFile.FileName).Take(10).ToArray()).Replace(' ', '-');
 		imageName = imageName + DateTime.Now.ToString("yymmssfff") + Path.GetExtension(imageFile.FileName);
 
-		var imagePath = Path.Combine(_hostEnvironment.ContentRootPath, "Images", imageName);
+		var imagePath = Path.Combine(_hostEnvironment.ContentRootPath, "wwwroot", "Images", imageName);
 		using (var fileStream = new FileStream(imagePath, FileMode.Create))
 		{
 			imageFile.CopyTo(fileStream);
@@ -124,7 +124,7 @@ public class PhotoService : IPhotoService
 
 	public void DeleteImage(string imageName)
 	{
-		var imagePath = Path.Combine(_hostEnvironment.ContentRootPath, "Images", imageName);
+		var imagePath = Path.Combine(_hostEnvironment.ContentRootPath, "wwwroot", "Images", imageName);
 		if (System.IO.File.Exists(imagePath))
 			System.IO.File.Delete(imagePath);
 	}
