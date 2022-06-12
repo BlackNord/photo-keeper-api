@@ -80,9 +80,4 @@ public class ColorizationService : IColorizationService
 			process.Start();
 		}
 	}
-
-	public void SavePhoto()
-	{
-
-	}
 }
